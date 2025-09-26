@@ -3,32 +3,32 @@
     "total_cases": 2,
     "results": [
       {
-        "question": "按注册时间降序排列用户",
-        "generated_sql": "SELECT * FROM users u ORDER BY u.registration_date DESC;",
-        "ground_truth_sql": "SELECT * FROM users ORDER BY registration_date DESC",
+        "question": "查询复购用户",
+        "generated_sql": "SELECT o.user_id, COUNT(o.order_number) AS order_count FROM orders o JOIN users u ON o.user_id = u.user_id GROUP BY o.user_id HAVING COUNT(o.order_number) > 1;",
+        "ground_truth_sql": "SELECT user_id, COUNT(*) AS order_count FROM orders GROUP BY",
         "syntax_accuracy": 1.0,
         "execution_accuracy": 0.0,
         "exact_match": 0.0,
-        "semantic_similarity": 1.0,
-        "retrieval_quality": 0.9396028094311152
+        "semantic_similarity": 0.8466473536503037,
+        "retrieval_quality": 0.9297097822458994
       },
       {
-        "question": "计算订单项总金额",
-        "generated_sql": "SELECT oi.order_id, SUM(oi.subtotal) AS total_amount FROM order_items oi JOIN orders o ON oi.order_id = o.order_id GROUP BY oi.order_id;",
-        "ground_truth_sql": "SELECT order_id, SUM(subtotal) AS total FROM order_items GROUP BY order_id",
+        "question": "显示最近一周的库存变动",
+        "generated_sql": "SELECT il.reason AS 动因, p.stock_quantity AS 当前库存, il.previous_quantity AS 变动前库存, il.new_quantity AS 变动后库存 FROM inventory_logs il JOIN products p ON il.product_id = p.id WHERE il.created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) ORDER BY il.created_at DESC;",
+        "ground_truth_sql": "SELECT * FROM inventory_logs WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) ORDER BY created_at DESC",
         "syntax_accuracy": 1.0,
         "execution_accuracy": 0.0,
         "exact_match": 0.0,
-        "semantic_similarity": 0.49083421206610717,
-        "retrieval_quality": 0.949336528708266
+        "semantic_similarity": 0.26566370281661933,
+        "retrieval_quality": 0.9428071040868797
       }
     ],
     "average_metrics": {
       "avg_syntax_accuracy": 1.0,
       "avg_execution_accuracy": 0.0,
       "avg_exact_match": 0.0,
-      "avg_semantic_similarity": 0.7454171060330536,
-      "avg_retrieval_quality": 0.9444696690696905
+      "avg_semantic_similarity": 0.5561555282334616,
+      "avg_retrieval_quality": 0.9362584431663896
     },
     "model_used": "qwen2.5:3b"
   },

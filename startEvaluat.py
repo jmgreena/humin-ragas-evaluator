@@ -22,12 +22,12 @@ def main():
     # 3. 准备测试数据
     test_cases = [
         {
-            "question": "按注册时间降序排列用户",
-            "sql": "SELECT * FROM users ORDER BY registration_date DESC"
+            "question": "查询复购用户",
+            "sql": "SELECT user_id, COUNT(*) AS order_count FROM orders GROUP BY"
         },
         {
-            "question": "计算订单项总金额", 
-            "sql": "SELECT order_id, SUM(subtotal) AS total FROM order_items GROUP BY order_id"
+            "question": "显示最近一周的库存变动", 
+            "sql": "SELECT * FROM inventory_logs WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) ORDER BY created_at DESC"
         }
     ]
     
