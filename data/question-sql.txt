@@ -1,0 +1,85 @@
+# Text2SQL训练和评估示例对
+
+# 简单查询
+查询所有用户信息	SELECT * FROM users;
+显示所有产品名称和价格	SELECT product_name, price FROM products;
+获取所有订单编号和总金额	SELECT order_number, total_amount FROM orders;
+
+# 条件查询
+查找状态为活跃的用户	SELECT * FROM users WHERE status = 'active';
+查询价格高于100元的产品	SELECT * FROM products WHERE price > 100;
+显示已支付的订单	SELECT * FROM orders WHERE payment_status = 'paid';
+
+# 排序和限制
+按注册时间降序排列用户	SELECT * FROM users ORDER BY registration_date DESC;
+显示最近创建的5个订单	SELECT * FROM orders ORDER BY order_date DESC LIMIT 5;
+查询价格最低的3个产品	SELECT * FROM products ORDER BY price ASC LIMIT 3;
+
+# 聚合函数
+统计用户总数	SELECT COUNT(*) AS user_count FROM users;
+计算所有产品的平均价格	SELECT AVG(price) AS avg_price FROM products;
+查询每个分类下的产品数量	SELECT category_id, COUNT(*) AS product_count FROM products GROUP BY category_id;
+
+# 多表连接
+查询订单及其用户信息	SELECT o.order_number, u.username, o.total_amount FROM orders o JOIN users u ON o.user_id = u.user_id;
+显示产品及其分类信息	SELECT p.product_name, c.category_name, p.price FROM products p JOIN categories c ON p.category_id = c.category_id;
+查询订单详情包括产品信息	SELECT oi.order_id, p.product_name, oi.quantity, oi.unit_price FROM order_items oi JOIN products p ON oi.product_id = p.product_id;
+
+# 复杂条件
+查询2023年的订单	SELECT * FROM orders WHERE order_date >= '2023-01-01' AND order_date <= '2023-12-31';
+查找库存少于10且价格高于50的产品	SELECT * FROM products WHERE stock_quantity < 10 AND price > 50;
+查询评分4星以上的评论	SELECT * FROM reviews WHERE rating >= 4;
+
+# 子查询
+查询价格高于平均价格的产品	SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products);
+查找没有下过订单的用户	SELECT * FROM users WHERE user_id NOT IN (SELECT DISTINCT user_id FROM orders);
+查询每个用户的最新订单	SELECT * FROM orders o1 WHERE order_date = (SELECT MAX(order_date) FROM orders o2 WHERE o2.user_id = o1.user_id);
+
+# 日期函数
+查询本周注册的用户	SELECT * FROM users WHERE WEEK(registration_date) = WEEK(CURDATE()) AND YEAR(registration_date) = YEAR(CURDATE());
+显示上个月的订单	SELECT * FROM orders WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND order_date < CURDATE();
+查询今天的订单数量	SELECT COUNT(*) AS today_orders FROM orders WHERE DATE(order_date) = CURDATE();
+
+# 字符串操作
+查询用户名包含"admin"的用户	SELECT * FROM users WHERE username LIKE '%admin%';
+显示邮箱为gmail的用户	SELECT * FROM users WHERE email LIKE '%@gmail.com%';
+查询产品名称长度超过10字符的产品	SELECT * FROM products WHERE LENGTH(product_name) > 10;
+
+# 数学运算
+计算订单项总金额	SELECT order_id, SUM(subtotal) AS total FROM order_items GROUP BY order_id;
+显示产品利润率	SELECT product_name, price, cost_price, (price - cost_price) / price * 100 AS profit_margin FROM products;
+查询打折后的产品价格	SELECT product_name, price, price * 0.8 AS discounted_price FROM products;
+
+# 案例查询
+根据金额分类订单	SELECT order_id, total_amount, CASE WHEN total_amount > 1000 THEN '大额' WHEN total_amount > 500 THEN '中额' ELSE '小额' END AS amount_type FROM orders;
+根据评分显示评论等级	SELECT review_id, rating, CASE WHEN rating = 5 THEN '优秀' WHEN rating >= 4 THEN '良好' WHEN rating >= 3 THEN '一般' ELSE '差评' END AS rating_level FROM reviews;
+
+# 窗口函数
+为每个用户的订单按金额排名	SELECT order_id, user_id, total_amount, RANK() OVER (PARTITION BY user_id ORDER BY total_amount DESC) AS amount_rank FROM orders;
+计算累计销售额	SELECT order_date, total_amount, SUM(total_amount) OVER (ORDER BY order_date) AS cumulative_amount FROM orders;
+查询每个分类价格最高的产品	SELECT product_name, category_id, price FROM (SELECT product_name, category_id, price, ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY price DESC) AS rn FROM products) t WHERE rn = 1;
+
+# 联合查询
+合并显示用户和订单数量	SELECT user_id, username, 'user' AS type FROM users UNION SELECT order_id, order_number, 'order' AS type FROM orders;
+查询既有评论又有购物车记录的用户	SELECT user_id FROM reviews UNION SELECT user_id FROM cart_items;
+
+# 业务相关复杂查询
+查询每个用户的订单总金额	SELECT u.user_id, u.username, SUM(o.total_amount) AS total_spent FROM users u LEFT JOIN orders o ON u.user_id = o.user_id GROUP BY u.user_id, u.username;
+显示每个产品的销售数量	SELECT p.product_id, p.product_name, SUM(oi.quantity) AS total_sold FROM products p LEFT JOIN order_items oi ON p.product_id = oi.product_id GROUP BY p.product_id, p.product_name;
+查询每个月的订单统计	SELECT YEAR(order_date) AS year, MONTH(order_date) AS month, COUNT(*) AS order_count, SUM(total_amount) AS monthly_revenue FROM orders GROUP BY YEAR(order_date), MONTH(order_date) ORDER BY year, month;
+
+# 高级业务场景
+查询复购用户	SELECT user_id, COUNT(*) AS order_count FROM orders GROUP BY user_id HAVING COUNT(*) > 1;
+显示热门产品（按销售数量）	SELECT p.product_id, p.product_name, SUM(oi.quantity) AS total_sold FROM products p JOIN order_items oi ON p.product_id = oi.product_id GROUP BY p.product_id, p.product_name ORDER BY total_sold DESC LIMIT 10;
+查询用户平均客单价	SELECT AVG(total_amount) AS avg_order_value FROM orders;
+计算用户生命周期价值	SELECT u.user_id, u.username, COUNT(o.order_id) AS order_count, SUM(o.total_amount) AS lifetime_value FROM users u LEFT JOIN orders o ON u.user_id = o.user_id GROUP BY u.user_id, u.username;
+
+# 库存管理相关
+查询库存预警产品	SELECT * FROM products WHERE stock_quantity < 20;
+显示最近一周的库存变动	SELECT * FROM inventory_logs WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) ORDER BY created_at DESC;
+计算产品周转率	SELECT p.product_id, p.product_name, p.stock_quantity, SUM(oi.quantity) AS total_sold, SUM(oi.quantity) / p.stock_quantity AS turnover_rate FROM products p LEFT JOIN order_items oi ON p.product_id = oi.product_id GROUP BY p.product_id, p.product_name, p.stock_quantity;
+
+# 评论分析
+查询每个产品的平均评分	SELECT p.product_id, p.product_name, AVG(r.rating) AS avg_rating FROM products p LEFT JOIN reviews r ON p.product_id = r.product_id AND r.status = 'approved' GROUP BY p.product_id, p.product_name;
+显示高评分产品	SELECT p.product_id, p.product_name, AVG(r.rating) AS avg_rating FROM products p JOIN reviews r ON p.product_id = r.product_id WHERE r.status = 'approved' GROUP BY p.product_id, p.product_name HAVING AVG(r.rating) >= 4.5;
+查询有用评论最多的产品	SELECT p.product_id, p.product_name, SUM(r.helpful_count) AS total_helpful FROM products p JOIN reviews r ON p.product_id = r.product_id GROUP BY p.product_id, p.product_name ORDER BY total_helpful DESC LIMIT 5;

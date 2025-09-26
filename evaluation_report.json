@@ -1,0 +1,42 @@
+{
+  "comprehensive_evaluation": {
+    "total_cases": 2,
+    "results": [
+      {
+        "question": "按注册时间降序排列用户",
+        "generated_sql": "SELECT * FROM users u ORDER BY u.registration_date DESC;",
+        "ground_truth_sql": "SELECT * FROM users ORDER BY registration_date DESC",
+        "syntax_accuracy": 1.0,
+        "execution_accuracy": 0.0,
+        "exact_match": 0.0,
+        "semantic_similarity": 1.0,
+        "retrieval_quality": 0.9396028094311152
+      },
+      {
+        "question": "计算订单项总金额",
+        "generated_sql": "SELECT oi.order_id, SUM(oi.subtotal) AS total_amount FROM order_items oi JOIN orders o ON oi.order_id = o.order_id GROUP BY oi.order_id;",
+        "ground_truth_sql": "SELECT order_id, SUM(subtotal) AS total FROM order_items GROUP BY order_id",
+        "syntax_accuracy": 1.0,
+        "execution_accuracy": 0.0,
+        "exact_match": 0.0,
+        "semantic_similarity": 0.49083421206610717,
+        "retrieval_quality": 0.949336528708266
+      }
+    ],
+    "average_metrics": {
+      "avg_syntax_accuracy": 1.0,
+      "avg_execution_accuracy": 0.0,
+      "avg_exact_match": 0.0,
+      "avg_semantic_similarity": 0.7454171060330536,
+      "avg_retrieval_quality": 0.9444696690696905
+    },
+    "model_used": "qwen2.5:3b"
+  },
+  "ragas_assessment": {
+    "faithfulness": 0.7,
+    "answer_relevancy": 0.6,
+    "context_recall": 0.8,
+    "context_precision": 0.75
+  },
+  "timestamp": "2025-09-26"
+}

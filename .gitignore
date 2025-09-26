@@ -1,0 +1,11 @@
+# temp
+__pycache__/
+chroma_db/
+
+# Environments
+.env
+.venv
+Project0111/
+models/
+ENV/
+

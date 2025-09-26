@@ -1,0 +1,130 @@
+# 电商系统数据库字段业务含义说明
+
+# ==================== 用户表 (users) ====================
+users.user_id: 用户唯一标识符，自增主键
+users.username: 用户登录名，必须唯一
+users.email: 用户邮箱地址，用于登录和通知，必须唯一
+users.password_hash: 加密后的密码，使用bcrypt加密
+users.full_name: 用户全名
+users.phone_number: 用户手机号码
+users.registration_date: 用户注册时间，自动记录
+users.last_login: 最后一次登录时间
+users.status: 用户状态：active-活跃, inactive-不活跃, suspended-已停用
+users.date_of_birth: 用户出生日期
+users.gender: 用户性别：male-男性, female-女性, other-其他
+users.address: 用户默认地址
+
+# ==================== 产品分类表 (categories) ====================
+categories.category_id: 分类唯一标识符，自增主键
+categories.category_name: 分类名称
+categories.parent_category_id: 父分类ID，用于多级分类结构
+categories.description: 分类详细描述
+categories.created_at: 分类创建时间
+categories.updated_at: 分类最后更新时间
+categories.is_active: 分类是否激活
+
+# ==================== 产品表 (products) ====================
+products.product_id: 产品唯一标识符，自增主键
+products.product_name: 产品名称
+products.description: 产品详细描述
+products.category_id: 所属分类ID
+products.price: 产品销售价格，单位元
+products.cost_price: 产品成本价格
+products.stock_quantity: 当前库存数量
+products.sku: 库存单位编码，唯一标识
+products.brand: 产品品牌名称
+products.weight: 产品重量，单位千克
+products.dimensions: 产品尺寸
+products.image_url: 产品主图URL地址
+products.is_available: 产品是否可销售
+products.created_at: 产品创建时间
+products.updated_at: 产品信息最后更新时间
+
+# ==================== 订单表 (orders) ====================
+orders.order_id: 订单唯一标识符，自增主键
+orders.user_id: 下单用户ID
+orders.order_number: 订单编号，系统生成的唯一订单号
+orders.order_date: 订单创建时间
+orders.total_amount: 订单总金额
+orders.status: 订单状态：pending-待确认, confirmed-已确认, shipped-已发货, delivered-已送达, cancelled-已取消
+orders.shipping_address: 收货地址
+orders.billing_address: 账单地址
+orders.payment_method: 支付方式：credit_card-信用卡, paypal-PayPal, bank_transfer-银行转账, cash-货到付款
+orders.payment_status: 支付状态：pending-待支付, paid-已支付, failed-支付失败, refunded-已退款
+orders.shipping_cost: 运费金额
+orders.tax_amount: 税费金额
+orders.notes: 订单备注
+orders.estimated_delivery_date: 预计送达日期
+orders.actual_delivery_date: 实际送达日期
+
+# ==================== 订单项表 (order_items) ====================
+order_items.order_item_id: 订单项唯一标识符，自增主键
+order_items.order_id: 所属订单ID
+order_items.product_id: 产品ID
+order_items.quantity: 购买数量
+order_items.unit_price: 下单时的产品单价
+order_items.subtotal: 小计金额
+order_items.created_at: 订单项创建时间
+
+# ==================== 库存记录表 (inventory_logs) ====================
+inventory_logs.log_id: 库存记录唯一标识符，自增主键
+inventory_logs.product_id: 产品ID
+inventory_logs.change_type: 库存变动类型：in-入库, out-出库, adjustment-调整, return-退货入库
+inventory_logs.quantity_change: 库存变动数量
+inventory_logs.previous_quantity: 变动前库存数量
+inventory_logs.new_quantity: 变动后库存数量
+inventory_logs.reason: 变动原因描述
+inventory_logs.reference_id: 关联业务ID
+inventory_logs.created_by: 操作人员ID
+inventory_logs.created_at: 记录创建时间
+
+# ==================== 评论表 (reviews) ====================
+reviews.review_id: 评论唯一标识符，自增主键
+reviews.product_id: 被评论的产品ID
+reviews.user_id: 评论用户ID
+reviews.order_id: 关联的订单ID
+reviews.rating: 评分，1-5星
+reviews.title: 评论标题
+reviews.comment: 评论内容
+reviews.is_verified_purchase: 是否验证购买
+reviews.helpful_count: 有用投票数
+reviews.created_at: 评论创建时间
+reviews.updated_at: 评论最后修改时间
+reviews.status: 评论状态：pending-待审核, approved-已通过, rejected-已拒绝
+
+# ==================== 购物车表 (cart_items) ====================
+cart_items.cart_item_id: 购物车项唯一标识符，自增主键
+cart_items.user_id: 用户ID
+cart_items.product_id: 产品ID
+cart_items.quantity: 购物车中的产品数量
+cart_items.added_at: 加入购物车时间
+cart_items.updated_at: 最后更新时间
+
+# ==================== 优惠券表 (coupons) ====================
+coupons.coupon_id: 优惠券唯一标识符，自增主键
+coupons.coupon_code: 优惠券代码，必须唯一
+coupons.description: 优惠券描述
+coupons.discount_type: 折扣类型：percentage-百分比折扣, fixed_amount-固定金额折扣
+coupons.discount_value: 折扣值
+coupons.minimum_order_amount: 最低订单金额要求
+coupons.maximum_discount_amount: 最大折扣金额限制
+coupons.start_date: 优惠券开始生效时间
+coupons.end_date: 优惠券过期时间
+coupons.usage_limit: 使用次数限制
+coupons.used_count: 已使用次数
+coupons.is_active: 优惠券是否激活
+
+# ==================== 用户地址表 (user_addresses) ====================
+user_addresses.address_id: 地址唯一标识符，自增主键
+user_addresses.user_id: 用户ID
+user_addresses.address_type: 地址类型：home-家庭地址, work-工作地址, other-其他
+user_addresses.recipient_name: 收件人姓名
+user_addresses.phone_number: 收件人电话
+user_addresses.address_line1: 地址行1
+user_addresses.address_line2: 地址行2
+user_addresses.city: 城市
+user_addresses.state: 州/省份
+user_addresses.postal_code: 邮政编码
+user_addresses.country: 国家
+user_addresses.is_default: 是否为默认地址
+user_addresses.created_at: 地址创建时间
